@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSNPerf | Deterministic TSN Traffic Testing</title>
+<meta name="description" content="TSNPerf is a professional TSN traffic generator and latency measurement tool for validating VLAN priorities, gate timing, multi-stream behavior, and live performance analytics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7fb;--surface:rgba(255,255,255,.9);--text:#13233d;--muted:#5d6c84;--accent:#0f4fa8;--accent-strong:#082f6b;--accent-soft:#dce9fb;--teal:#0d8a93;--shadow:0 24px 70px rgba(26,55,98,.12);--sans:"Manrope",sans-serif;--mono:"IBM Plex Mono",monospace}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:var(--sans);color:var(--text);background:radial-gradient(circle at top right,rgba(15,79,168,.12),transparent 28%),radial-gradient(circle at left center,rgba(13,138,147,.08),transparent 25%),linear-gradient(180deg,#f8fbff 0%,var(--bg) 55%,#eef3fa 100%);line-height:1.65;overflow-x:hidden}body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(15,79,168,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(15,79,168,.04) 1px,transparent 1px);background-size:56px 56px;mask-image:linear-gradient(180deg,rgba(0,0,0,.55),transparent 85%);pointer-events:none;z-index:0}a{color:inherit}code{font-family:var(--mono);font-size:.95em}.container{width:min(1180px,calc(100% - 40px));margin:0 auto;position:relative;z-index:1}.eyebrow,.section-kicker,.status-pill,.copy-btn,.brand-copy span,.footer-shell,.nav-links a,.nav-action,code,pre{font-family:var(--mono)}
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:rgba(248,251,255,.82);border-bottom:1px solid rgba(14,34,64,.08)}.nav-inner{width:min(1180px,calc(100% - 40px));margin:0 auto;min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:12px;text-decoration:none}.brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,rgba(15,79,168,.18),rgba(13,138,147,.12)),#fff;border:1px solid rgba(15,79,168,.12);position:relative;overflow:hidden;box-shadow:0 12px 28px rgba(15,79,168,.12)}.brand-mark::before,.brand-mark::after{content:"";position:absolute;left:8px;right:8px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--teal))}.brand-mark::before{top:12px;height:6px}.brand-mark::after{top:24px;height:3px;opacity:.65}.brand-copy strong{display:block;color:var(--text);font-size:1rem;font-weight:800}.brand-copy span{display:block;color:var(--muted);font-size:.82rem}.nav-links{list-style:none;display:flex;align-items:center;gap:28px}.nav-links a{text-decoration:none;color:var(--muted);font-weight:600;font-size:.96rem}.nav-links a:hover,.footer-links a:hover{color:var(--accent)}.nav-action,.btn-primary,.btn-secondary{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;text-decoration:none;font-weight:800;transition:transform .2s ease,box-shadow .2s ease}.nav-action{min-height:44px;padding:0 18px;border:1px solid rgba(15,79,168,.14);background:#fff;color:var(--accent);box-shadow:0 10px 28px rgba(15,79,168,.08)}
+.hero{padding:52px 0 64px}.hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);gap:34px;align-items:stretch}.hero-copy{padding:44px 0}.eyebrow{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid rgba(15,79,168,.12);border-radius:999px;background:rgba(255,255,255,.72);box-shadow:0 10px 30px rgba(15,79,168,.06);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}.eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--accent));box-shadow:0 0 0 6px rgba(13,138,147,.12)}h1,h2,h3{letter-spacing:-.03em}h1{font-size:clamp(3rem,6vw,5.6rem);line-height:.96;font-weight:800;margin:22px 0;max-width:760px}h2{font-size:clamp(2rem,4vw,3.4rem);line-height:1.05;font-weight:800;margin-bottom:18px}h3{font-size:1.15rem;font-weight:700;margin-bottom:10px}p{color:var(--muted);font-size:1.02rem}.lead{font-size:1.14rem;max-width:650px}.accent-text{color:var(--accent)}.hero-actions,.btn-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}.btn-primary,.btn-secondary{min-height:52px;padding:0 22px}.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#fff;box-shadow:0 18px 36px rgba(15,79,168,.24)}.btn-secondary{background:rgba(255,255,255,.72);border:1px solid rgba(14,34,64,.1);color:var(--text)}.btn-primary:hover,.btn-secondary:hover,.nav-action:hover{transform:translateY(-2px)}
+.hero-highlights,.metrics,.panel-subgrid,.band-grid,.cards-grid,.platform-grid{display:grid;gap:18px}.hero-highlights{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:38px}.mini-card,.band-item,.feature-card,.platform-card,.panel,.surface-card{background:var(--surface);border:1px solid rgba(14,34,64,.08);box-shadow:var(--shadow)}.mini-card{padding:18px;border-radius:18px}.mini-card strong,.band-item strong{display:block;color:var(--accent-strong)}.mini-card strong{font-size:1.4rem;margin-bottom:4px}.mini-card span{display:block;font-size:.9rem;color:var(--muted)}.hero-panel{display:grid;gap:18px}.panel,.surface-card{border-radius:28px;backdrop-filter:blur(18px)}.panel-main,.workflow-card,.download-card,.note-card,.platform-card{padding:28px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}.status-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(13,138,147,.1);color:var(--teal);font-size:.75rem;text-transform:uppercase}.status-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 5px rgba(13,138,147,.16)}.metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.metric{padding:16px;border-radius:18px;background:linear-gradient(180deg,rgba(220,233,251,.6),rgba(255,255,255,.9));border:1px solid rgba(15,79,168,.08)}.metric span{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px}.metric strong{font-family:var(--mono);font-size:1.22rem;color:var(--accent-strong)}
+</style>
+<style>
+.chart-strip{margin-top:20px;border-radius:20px;padding:18px;background:linear-gradient(180deg,#0e2240,#173767);color:#d9e7ff;overflow:hidden}.chart-strip .label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;font-size:.76rem;color:rgba(217,231,255,.78);text-transform:uppercase;letter-spacing:.08em}.sparkline{display:flex;align-items:end;gap:6px;height:130px}.sparkline span{flex:1;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#58b6ff,#19d3b7);opacity:.95;animation:rise .8s ease both}.panel-subgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel-sub{padding:22px}.panel-sub p{font-size:.94rem;margin-top:8px}.stats-band{padding:18px 0 92px}.band-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.band-item{padding:24px;border-radius:22px}.band-item strong{font-size:2rem;font-weight:800;margin-bottom:8px}section{padding:34px 0 96px}.section-kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}.section-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,420px);gap:30px;align-items:end;margin-bottom:36px}.cards-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.feature-card{padding:28px;border-radius:24px;transition:transform .22s ease,box-shadow .22s ease}.feature-card:hover{transform:translateY(-4px);box-shadow:0 28px 56px rgba(19,35,61,.12)}.feature-icon{width:48px;height:48px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px;background:linear-gradient(135deg,rgba(15,79,168,.12),rgba(13,138,147,.12));color:var(--accent);font-family:var(--mono);font-weight:700}.feature-list,.workflow-steps,.detail-list{list-style:none;display:grid;gap:10px}.feature-list{margin-top:14px}.feature-list li{color:var(--muted);font-size:.95rem;padding-left:16px;position:relative}.feature-list li::before{content:"";position:absolute;left:0;top:.72em;width:6px;height:6px;border-radius:50%;background:var(--teal)}
+.split-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:20px}.workflow-steps,.detail-list{gap:14px;margin-top:18px}.workflow-steps li,.detail-list li{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;color:var(--muted)}.step-num{width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.84rem;font-weight:600}.code-block{margin-top:20px;position:relative;border-radius:22px;background:#0d1c33;color:#dbe8ff;border:1px solid rgba(255,255,255,.08);box-shadow:0 22px 48px rgba(7,19,38,.22);padding:22px;overflow-x:auto}.code-block pre{font-family:var(--mono);font-size:.93rem;line-height:1.8;white-space:pre}.code-comment{color:#8da2c1}.copy-btn{position:absolute;top:14px;right:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);color:#dbe8ff;border-radius:999px;min-height:34px;padding:0 12px;font-size:.72rem;cursor:pointer}.platform-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.cta{padding-bottom:110px}.cta-shell{padding:42px;border-radius:34px;background:linear-gradient(135deg,rgba(15,79,168,.96),rgba(8,47,107,.96));color:#fff;box-shadow:0 34px 72px rgba(15,79,168,.28);position:relative;overflow:hidden}.cta-shell::before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%);right:-100px;top:-90px}.cta-shell p,.cta-shell .section-kicker{color:rgba(255,255,255,.82)}.cta-shell .btn-secondary{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18);color:#fff}footer{padding:0 0 40px}.footer-shell{padding-top:26px;border-top:1px solid rgba(14,34,64,.08);display:flex;justify-content:space-between;gap:24px;color:var(--muted);font-size:.94rem}.footer-links{display:flex;gap:20px;flex-wrap:wrap}.footer-links a{text-decoration:none;font-weight:600}.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}.reveal.visible{opacity:1;transform:translateY(0)}@keyframes rise{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}@media (max-width:1040px){.hero-grid,.section-head,.split-layout{grid-template-columns:1fr}.cards-grid,.platform-grid,.band-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:760px){.nav-inner{min-height:auto;padding:16px 0;flex-wrap:wrap}.nav-links{gap:16px;flex-wrap:wrap}.hero{padding-top:30px}.hero-copy{padding-top:10px}.hero-highlights,.metrics,.panel-subgrid,.cards-grid,.platform-grid,.band-grid{grid-template-columns:1fr}.cta-shell,.panel-main,.workflow-card,.download-card,.note-card,.feature-card,.platform-card{padding:24px}.footer-shell{flex-direction:column}}</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="brand" href="#">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-copy"><strong>TSNPerf</strong><span>TSN traffic generation and latency validation</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#workflow">Workflow</a></li>
+      <li><a href="#download">Download</a></li>
+      <li><a href="#platforms">Platforms</a></li>
+    </ul>
+    <a class="nav-action" href="https://github.com/tsnperf/tsnperf-tool">Get via Git</a>
+  </div>
+</nav>
+<main>
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy reveal">
+      <span class="eyebrow">v0.5 multi-stream traffic classes</span>
+      <h1>Professional TSN traffic testing for <span class="accent-text">deterministic Ethernet</span> validation.</h1>
+      <p class="lead">TSNPerf helps engineering teams generate packet streams, validate 802.1Q priority behavior, measure one-way latency, and monitor live results from a clean browser dashboard or the command line.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="https://github.com/tsnperf/tsnperf-tool">Download from Git</a>
+        <a class="btn-secondary" href="#download">See install steps</a>
+      </div>
+      <div class="hero-highlights">
+        <div class="mini-card"><strong>8</strong><span>independent concurrent streams</span></div>
+        <div class="mini-card"><strong>Live</strong><span>web dashboard with 500 ms refresh</span></div>
+        <div class="mini-card"><strong>802.1Q</strong><span>real VLAN and PCP tagging support</span></div>
+      </div>
+    </div>
+    <div class="hero-panel reveal">
+      <div class="panel panel-main">
+        <div class="panel-head"><strong>Live test overview</strong><span class="status-pill">receiver active</span></div>
+        <div class="metrics">
+          <div class="metric"><span>Received</span><strong>98,412</strong></div>
+          <div class="metric"><span>Loss</span><strong>0.08%</strong></div>
+          <div class="metric"><span>Avg latency</span><strong>68 us</strong></div>
+          <div class="metric"><span>Jitter</span><strong>11 us</strong></div>
+        </div>
+        <div class="chart-strip">
+          <div class="label-row"><span>Latency trend</span><span>Last 200 packets</span></div>
+          <div class="sparkline" aria-hidden="true">
+            <span style="height:38%"></span><span style="height:50%"></span><span style="height:44%"></span><span style="height:58%"></span><span style="height:63%"></span><span style="height:54%"></span><span style="height:72%"></span><span style="height:60%"></span><span style="height:68%"></span><span style="height:76%"></span><span style="height:66%"></span><span style="height:82%"></span><span style="height:70%"></span><span style="height:90%"></span><span style="height:62%"></span><span style="height:74%"></span>
+          </div>
+        </div>
+      </div>
+      <div class="panel-subgrid">
+        <div class="surface-card panel-sub"><h3>Multi-stream scheduling</h3><p>Run up to 8 VLAN and PCP classes in one test with per-stream sequence tracking, rate control, and cycle gating.</p></div>
+        <div class="surface-card panel-sub"><h3>Structured reporting</h3><p>Export JSON reports with full latency statistics, histogram data, and per-stream results for automation and regression tracking.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="stats-band">
+  <div class="container band-grid reveal">
+    <div class="band-item"><strong>Up to 8</strong><p>independent traffic classes in a single run with isolated loss and latency statistics per stream.</p></div>
+    <div class="band-item"><strong>802.1Q</strong><p>real Ethernet frame tagging with PCP, DEI, VID, configurable destination MAC, and raw socket transport.</p></div>
+    <div class="band-item"><strong>500 ms</strong><p>dashboard refresh cadence for live visibility into packet rate, loss behavior, and latency movement.</p></div>
+    <div class="band-item"><strong>Cross-platform</strong><p>single-binary operation across Windows and Linux ARM deployments with consistent behavior.</p></div>
+  </div>
+</div>
+<section id="features">
+  <div class="container">
+    <div class="section-head">
+      <div class="reveal">
+        <div class="section-kicker">Core capabilities</div>
+        <h2>Everything needed to generate, observe, and document TSN traffic behavior.</h2>
+      </div>
+      <p class="reveal">TSNPerf is now presented as a focused engineering product for lab validation, platform bring-up, and repeatable network performance checks.</p>
+    </div>
+    <div class="cards-grid">
+      <article class="feature-card reveal">
+        <div class="feature-icon">MS</div>
+        <h3>Multi-Stream Packet Generator</h3>
+        <p>Transmit up to 8 VLAN and PCP traffic classes simultaneously using the <code>--streams</code> syntax, with one OS thread and one timing controller per stream.</p>
+        <ul class="feature-list">
+          <li>Independent per-stream sequence numbering for loss detection</li>
+          <li>Separate TSN cycle gate and rate controller per class</li>
+          <li>Aggregated JSON output with full <code>streams[]</code> statistics</li>
+        </ul>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-icon">PG</div>
+        <h3>Packet Generation and Loss Detection</h3>
+        <p>Generate UDP traffic with configurable packet rate, packet size, and total packet count while embedding sequence numbers into every payload.</p>
+        <ul class="feature-list">
+          <li>Gap-based packet loss detection without sender and receiver coordination</li>
+          <li>Same workflow for loopback testing and real Ethernet hardware runs</li>
+          <li>Consistent command-line operation for scripted validation</li>
+        </ul>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-icon">Q</div>
+        <h3>Real 802.1Q Header Support</h3>
+        <p>Use proper Ethernet-level VLAN tagging with EtherType <code>0x8100</code>, TCI mapping for PCP, DEI, and VID, and inner EtherType <code>0x88B5</code> for TSNPerf traffic.</p>
+        <ul class="feature-list">
+          <li>Configurable destination MAC for unicast or broadcast</li>
+          <li>Raw socket I/O through <code>pnet_datalink</code></li>
+          <li>Switches can classify traffic by PCP directly from the frame header</li>
+        </ul>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-icon">TS</div>
+        <h3>TSN Cycle Scheduler</h3>
+        <p>Model simplified 802.1Qbv gate control behavior with cycle duration and open-slot timing defined in microseconds, milliseconds, or seconds.</p>
+        <ul class="feature-list">
+          <li>Gate-controlled injection for slot-bounded transmission</li>
+          <li>Sleep plus spin-wait timing strategy for precision without full CPU saturation</li>
+          <li>Useful for testing scheduled traffic windows and cycle alignment</li>
+        </ul>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-icon">LM</div>
+        <h3>Latency Measurement and Statistics</h3>
+        <p>Measure one-way latency as receive timestamp minus send timestamp and compute min, max, average, jitter, and packet loss across all received traffic.</p>
+        <ul class="feature-list">
+          <li>Jitter uses the RFC 3550 mean absolute deviation method</li>
+          <li>Loopback reveals OS scheduling and stack latency</li>
+          <li>PTP-synchronized hardware runs support true network latency analysis</li>
+        </ul>
+      </article>
+      <article class="feature-card reveal">
+        <div class="feature-icon">WD</div>
+        <h3>Live Dashboard and JSON Export</h3>
+        <p>Launch a light-theme embedded dashboard from the receiver and monitor latency trends, histogram movement, per-stream breakdown, and live stat cards.</p>
+        <ul class="feature-list">
+          <li>Single embedded HTML page with no separate frontend install</li>
+          <li>Adaptive histogram scaling and stream-aware charts</li>
+          <li>Structured JSON export for CI pipelines and regression tracking</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+<section id="workflow">
+  <div class="container split-layout">
+    <div class="surface-card workflow-card reveal">
+      <div class="section-kicker">How teams use it</div>
+      <h2>Built for repeatable TSN validation workflows.</h2>
+      <p>TSNPerf fits both quick bench checks and longer automated validation runs across Windows loopback environments and real Ethernet hardware.</p>
+      <ul class="workflow-steps">
+        <li><span class="step-num">01</span><div><strong>Configure traffic classes</strong><p>Define VLAN, PCP, packet rate, payload size, cycle timing, and stream combinations for the scenario you want to validate.</p></div></li>
+        <li><span class="step-num">02</span><div><strong>Run sender and receiver</strong><p>Transmit over UDP or raw Ethernet while the receiver collects latency samples, packet counts, and loss information in real time.</p></div></li>
+        <li><span class="step-num">03</span><div><strong>Review live analytics</strong><p>Use the web dashboard for instant visibility or read the command-line histogram and summary metrics directly after the run completes.</p></div></li>
+        <li><span class="step-num">04</span><div><strong>Export structured results</strong><p>Capture JSON output for reports, scripted comparisons, and automated regression tracking across device or firmware revisions.</p></div></li>
+      </ul>
+    </div>
+    <div class="surface-card note-card reveal">
+      <div class="section-kicker">Why it stands out</div>
+      <h3>Focused on actual TSN engineering signals</h3>
+      <ul class="detail-list">
+        <li><span class="step-num">A</span><div>Real 802.1Q frame headers, not only payload metadata, when operating in raw mode.</div></li>
+        <li><span class="step-num">B</span><div>Independent per-stream statistics make mixed-priority behavior much easier to diagnose in one run.</div></li>
+        <li><span class="step-num">C</span><div>The dashboard is lightweight, integrated, and ready to use directly from the receiver process.</div></li>
+        <li><span class="step-num">D</span><div>JSON export, histogram reporting, and stat cards give both operator-friendly and automation-friendly outputs.</div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section id="download">
+  <div class="container split-layout">
+    <div class="surface-card download-card reveal">
+      <div class="section-kicker">Download and run</div>
+      <h2>Get TSNPerf from Git and start testing.</h2>
+      <p>Use Git as the delivery channel for the tool, then build the binary and run sender or receiver commands for your environment.</p>
+      <div class="code-block">
+        <button class="copy-btn" type="button" onclick="copyCode(this)">Copy</button>
+        <pre><span class="code-comment"># Get the tool</span>
+git clone https://github.com/tsnperf/tsnperf-tool.git
+cd tsnperf-tool
+
+<span class="code-comment"># Build the release binary</span>
+cargo build --release
+
+<span class="code-comment"># Start a receiver with the live dashboard</span>
+./target/release/tsnperf recv --web 0.0.0.0:8080 --output report.json</pre>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" type="button" onclick="copyCode(this)">Copy</button>
+        <pre><span class="code-comment"># Example multi-stream sender run</span>
+./target/release/tsnperf send \
+  --streams "10:5,20:3,30:7" \
+  --rate 1000 \
+  --size 256 \
+  --count 10000 \
+  --cycle 1000us \
+  --slot 250us</pre>
+      </div>
+    </div>
+    <div class="surface-card note-card reveal">
+      <div class="section-kicker">What you get</div>
+      <h3>Output designed for both operators and automation</h3>
+      <ul class="detail-list">
+        <li><span class="step-num">1</span><div>Live dashboard cards for received packets, lost packets, min, max, average, jitter, and VLAN or PCP context.</div></li>
+        <li><span class="step-num">2</span><div>Latency time-series and histogram views that stay readable across changing latency ranges.</div></li>
+        <li><span class="step-num">3</span><div>ASCII histogram output in the terminal after the test completes for quick operator review.</div></li>
+        <li><span class="step-num">4</span><div>JSON reports with overall statistics and detailed <code>streams[]</code> breakdowns in multi-stream mode.</div></li>
+      </ul>
+      <div class="btn-row">
+        <a class="btn-primary" href="https://github.com/tsnperf/tsnperf-tool">Open Git download</a>
+        <a class="btn-secondary" href="https://github.com/tsnperf/tsnperf-tool/releases">Download release</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="platforms">
+  <div class="container">
+    <div class="section-head">
+      <div class="reveal">
+        <div class="section-kicker">Deployment targets</div>
+        <h2>Consistent behavior across development systems and target hardware.</h2>
+      </div>
+      <p class="reveal">TSNPerf is positioned here as a dependable lab and field utility, whether you are validating from a Windows workstation or deploying to Linux ARM boards.</p>
+    </div>
+    <div class="platform-grid">
+      <article class="surface-card platform-card reveal"><h3>Windows</h3><p>Run the tool as a single binary on Windows, with loopback testing for local validation and raw Ethernet support when the packet path needs to be exercised directly.</p></article>
+      <article class="surface-card platform-card reveal"><h3>Linux ARM</h3><p>Cross-compile for <code>armv7-unknown-linux-gnueabihf</code> targets such as BeagleBone and Raspberry Pi systems used in embedded TSN environments.</p></article>
+      <article class="surface-card platform-card reveal"><h3>Single operational model</h3><p>Keep the same feature set, reporting structure, and workflow across both platforms so test procedures remain straightforward and repeatable.</p></article>
+    </div>
+  </div>
+</section>
+<section class="cta">
+  <div class="container">
+    <div class="cta-shell reveal">
+      <div class="section-kicker">Start testing</div>
+      <h2>Download TSNPerf from Git and put deterministic traffic scenarios under measurement.</h2>
+      <p class="lead">A cleaner product-facing website that explains what the tool does, why it matters, and how to get it, with a clean, product-focused message throughout.</p>
+      <div class="btn-row">
+        <a class="btn-primary" href="https://github.com/tsnperf/tsnperf-tool">Get TSNPerf</a>
+        <a class="btn-secondary" href="#features">Review features</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>
+  <div class="container footer-shell">
+    <div>TSNPerf product overview for download, feature review, and deployment guidance.</div>
+    <div class="footer-links">
+      <a href="https://github.com/tsnperf/tsnperf-tool">Git download</a>
+      <a href="https://github.com/tsnperf/tsnperf-tool/releases">Releases</a>
+      <a href="#download">Install</a>
+    </div>
+  </div>
+</footer>
+<script>
+function copyCode(button){const text=button.parentElement.querySelector("pre").innerText;navigator.clipboard.writeText(text).then(()=>{const original=button.textContent;button.textContent="Copied";setTimeout(()=>{button.textContent=original},1500)})}
+const observer=new IntersectionObserver((entries)=>{entries.forEach((entry)=>{if(entry.isIntersecting){entry.target.classList.add("visible")}})},{threshold:.12});
+document.querySelectorAll(".reveal").forEach((element)=>observer.observe(element));
+</script>
+</body>
+</html>
+
