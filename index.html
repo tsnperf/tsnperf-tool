@@ -203,19 +203,177 @@ footer{padding:0 0 40px}
 @keyframes rise{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 .sparkline span{animation:rise .8s ease both}
 
-/* ── Responsive ── */
-@media(max-width:1040px){
-  .hero-grid,.section-head,.split-layout,.contact-grid,.eval-grid,.cta-grid{grid-template-columns:1fr}
-  .cards-grid,.platform-grid,.band-grid,.pricing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* ══ Responsive ══════════════════════════════════════════════════════════════
+   1200px  tablet landscape (minor)
+    960px  tablet landscape
+    768px  tablet portrait — collapse nav, stack hero
+    600px  mobile — single column everything
+    400px  small phone — tighten further
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1200px: Wide tablet ── */
+@media(max-width:1200px){
+  .pricing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pricing-card.popular{margin-top:18px} /* room for badge when wrapping */
 }
-@media(max-width:760px){
-  .nav-inner{min-height:auto;padding:16px 0;flex-wrap:wrap}
-  .nav-links{gap:14px;flex-wrap:wrap}
-  .hero{padding-top:28px}
-  .hero-copy{padding-top:8px}
-  .hero-highlights,.metrics,.panel-subgrid,.cards-grid,.platform-grid,.band-grid,.pricing-grid{grid-template-columns:1fr}
-  .cta-shell,.panel-main,.workflow-card,.download-card,.note-card,.feature-card,.platform-card,.contact-card,.eval-card,.pricing-card{padding:24px}
-  .footer-shell{flex-direction:column}
+
+/* ── 960px: Tablet landscape ── */
+@media(max-width:960px){
+  .hero-grid,.section-head,.split-layout,.contact-grid,.eval-grid,.cta-grid{
+    grid-template-columns:1fr
+  }
+  .cards-grid,.band-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .platform-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  section{padding:28px 0 72px}
+  .stats-band{padding:10px 0 64px}
+  .hero-panel{order:2} /* stat panel below copy when stacked */
+  h2{font-size:clamp(1.7rem,3.5vw,2.8rem)}
+}
+
+/* ── 768px: Tablet portrait ── */
+@media(max-width:768px){
+  /* Nav — keep brand and CTA, move links to wrap row */
+  .nav-inner{min-height:auto;padding:14px 0;flex-wrap:wrap;gap:10px}
+  .nav-links{
+    order:3;width:100%;gap:12px;flex-wrap:wrap;
+    padding:10px 0 4px;border-top:1px solid rgba(14,34,64,.07)
+  }
+  .nav-links a{font-size:.88rem}
+  .nav-action{margin-left:auto}
+
+  /* Hero */
+  .hero{padding:28px 0 44px}
+  .hero-copy{padding:8px 0}
+  .hero-highlights{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+  /* Sections */
+  section{padding:22px 0 62px}
+  .stats-band{padding:8px 0 54px}
+
+  /* Cards stay 2-col on tablet portrait */
+  .cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .platform-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+  /* Pricing 2-col */
+  .pricing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+  /* Eval table: allow horizontal scroll */
+  .eval-card{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .eval-limits-table{min-width:480px}
+
+  /* Padding reduction */
+  .cta-shell{padding:34px}
+  .panel-main{padding:22px}
+}
+
+/* ── 600px: Mobile ── */
+@media(max-width:600px){
+  /* Container edge-to-edge padding */
+  .container{width:calc(100% - 32px)}
+
+  /* Nav — hide links on small phones, keep brand + CTA button */
+  .nav-links{display:none}
+  .nav-inner{padding:12px 0;gap:8px}
+  .brand-copy span{display:none} /* hide tagline, keep wordmark */
+  .nav-action{font-size:.82rem;min-height:38px;padding:0 14px}
+
+  /* Hero */
+  .hero{padding:20px 0 36px}
+  .hero-copy{padding:4px 0}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .hero-actions .btn-primary,.hero-actions .btn-secondary{text-align:center}
+  .hero-highlights{grid-template-columns:1fr 1fr;gap:12px}
+  .hero-panel{display:none} /* hide stat mock on small phones to avoid clutter */
+
+  /* Stats band */
+  .stats-band{padding:6px 0 44px}
+  .band-grid{grid-template-columns:1fr 1fr;gap:14px}
+  .band-item{padding:18px}
+  .band-item strong{font-size:1.5rem}
+
+  /* Section */
+  section{padding:16px 0 48px}
+  .section-head{margin-bottom:22px}
+  h2{font-size:1.7rem}
+
+  /* Cards — single column */
+  .cards-grid,.platform-grid,.pricing-grid{grid-template-columns:1fr}
+
+  /* Popular pricing badge needs top margin when single-col */
+  .pricing-card.popular{margin-top:22px}
+
+  /* Eval table */
+  .eval-grid{grid-template-columns:1fr}
+  .eval-card{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:20px}
+  .eval-limits-table{min-width:420px;font-size:.82rem}
+  .eval-limits-table th,.eval-limits-table td{padding:8px 10px}
+  .trial-step{padding:14px}
+
+  /* Split layout */
+  .split-layout{grid-template-columns:1fr}
+
+  /* Contact */
+  .contact-item{flex-direction:column;align-items:flex-start;gap:12px}
+  .contact-icon{width:46px;height:46px}
+
+  /* Cards padding */
+  .cta-shell,.panel-main,.workflow-card,.download-card,.note-card,
+  .feature-card,.platform-card,.contact-card,.eval-card,.pricing-card,
+  .workflow-card,.note-card{padding:20px}
+
+  /* CTA */
+  .cta-grid{gap:16px}
+  .cta-shell{padding:24px}
+  .cta{padding-bottom:60px}
+  .btn-row{flex-direction:column;align-items:stretch}
+  .btn-row a,.btn-row button{text-align:center}
+
+  /* Code blocks */
+  .code-block pre{font-size:.8rem;line-height:1.7}
+  .code-block{padding:16px}
+  .copy-btn{top:10px;right:10px}
+
+  /* Footer */
+  .footer-shell{flex-direction:column;gap:14px}
+  .footer-links{gap:12px}
+}
+
+/* ── 400px: Small phone ── */
+@media(max-width:400px){
+  .container{width:calc(100% - 24px)}
+
+  /* Typography */
+  h1{font-size:2rem!important}
+  h2{font-size:1.55rem}
+  h3{font-size:1rem}
+  .lead{font-size:1rem}
+
+  /* Nav */
+  .brand-mark{width:34px;height:34px}
+  .brand-copy strong{font-size:.9rem}
+
+  /* Hero */
+  .hero-highlights{grid-template-columns:1fr}
+  .mini-card strong{font-size:1.2rem}
+
+  /* Bands */
+  .band-grid{grid-template-columns:1fr}
+
+  /* Pricing */
+  .pricing-price strong{font-size:2rem}
+
+  /* Eval table */
+  .eval-limits-table{min-width:360px;font-size:.78rem}
+
+  /* Buttons */
+  .btn-primary,.btn-secondary{min-height:46px;font-size:.9rem}
+
+  /* Download button in platform cards */
+  .download-btn{font-size:.82rem;padding:9px 14px}
+
+  /* Misc */
+  .feature-icon{width:40px;height:40px}
+  .step-num{width:28px;height:28px;font-size:.78rem}
 }
 </style>
 </head>
@@ -264,7 +422,7 @@ footer{padding:0 0 40px}
     <div class="hero-panel reveal">
       <div class="panel panel-main">
         <div class="panel-head">
-          <strong>Live test — 3 active streams</strong>
+          <strong>Live test — 8 active streams</strong>
           <span class="status-pill">receiver active</span>
         </div>
         <div class="metrics">
