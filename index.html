@@ -19,7 +19,8 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:var(--sans);color:var(--text);background:radial-gradient(circle at top right,rgba(15,79,168,.12),transparent 28%),radial-gradient(circle at left center,rgba(13,138,147,.08),transparent 25%),linear-gradient(180deg,#f8fbff 0%,var(--bg) 55%,#eef3fa 100%);line-height:1.65;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(15,79,168,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(15,79,168,.04) 1px,transparent 1px);background-size:56px 56px;mask-image:linear-gradient(180deg,rgba(0,0,0,.55),transparent 85%);pointer-events:none;z-index:0}
+body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(15,79,168,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(15,79,168,.04) 1px,transparent 1px);background-size:56px 56px;mask-image:linear-gradient(180deg,rgba(0,0,0,.55),transparent 85%);pointer-events:none;z-index:0;animation:gridDrift 60s linear infinite}
+@keyframes gridDrift{from{background-position:0 0,0 0}to{background-position:56px 56px,56px 56px}}
 a{color:inherit}
 code{font-family:var(--mono);font-size:.95em}
 .container{width:min(1180px,calc(100% - 40px));margin:0 auto;position:relative;z-index:1}
@@ -198,10 +199,173 @@ footer{padding:0 0 40px}
 .footer-links a:hover{color:var(--accent)}
 
 /* ── Reveal animation ── */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal{opacity:0;transform:translateY(28px) scale(.985);transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1)}
+.reveal.visible{opacity:1;transform:translateY(0) scale(1)}
+.reveal-left{transform:translateX(-32px)}
+.reveal-left.visible{transform:translateX(0)}
+.reveal-right{transform:translateX(32px)}
+.reveal-right.visible{transform:translateX(0)}
 @keyframes rise{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
-.sparkline span{animation:rise .8s ease both}
+.sparkline span{animation:rise .8s ease both,barPulse 2.4s ease-in-out infinite}
+@keyframes barPulse{0%,100%{filter:brightness(1) saturate(1)}50%{filter:brightness(1.25) saturate(1.15)}}
+
+/* ══ Immersive layers ══════════════════════════════════════════════════════ */
+
+/* Scroll progress bar */
+.scroll-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--accent),var(--teal),var(--accent));background-size:200% 100%;z-index:100;box-shadow:0 0 20px rgba(15,79,168,.5);animation:gradShift 4s linear infinite;transition:width .08s ease-out}
+@keyframes gradShift{from{background-position:0 0}to{background-position:200% 0}}
+
+/* Aurora orbs — drifting coloured blobs */
+.aurora{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.aurora span{position:absolute;border-radius:50%;filter:blur(80px);opacity:.55;mix-blend-mode:multiply;will-change:transform}
+.aurora .o1{width:520px;height:520px;top:-120px;left:-80px;background:radial-gradient(circle,rgba(15,79,168,.35),transparent 65%);animation:drift1 22s ease-in-out infinite}
+.aurora .o2{width:460px;height:460px;top:30%;right:-120px;background:radial-gradient(circle,rgba(13,138,147,.32),transparent 65%);animation:drift2 26s ease-in-out infinite}
+.aurora .o3{width:420px;height:420px;bottom:10%;left:20%;background:radial-gradient(circle,rgba(88,182,255,.28),transparent 65%);animation:drift3 30s ease-in-out infinite}
+.aurora .o4{width:380px;height:380px;bottom:-80px;right:10%;background:radial-gradient(circle,rgba(180,83,9,.14),transparent 65%);animation:drift4 34s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(80px,60px) scale(1.15)}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-70px,90px) scale(1.1)}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,-80px) scale(1.12)}}
+@keyframes drift4{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-90px,-50px) scale(1.08)}}
+
+/* Cursor glow — soft pointer-reactive spotlight */
+.cursor-glow{position:fixed;width:460px;height:460px;border-radius:50%;pointer-events:none;z-index:1;background:radial-gradient(circle,rgba(15,79,168,.18),rgba(13,138,147,.08) 40%,transparent 70%);transform:translate(-50%,-50%);transition:opacity .3s ease;opacity:0;mix-blend-mode:multiply;will-change:transform}
+@media(hover:hover){.cursor-glow.active{opacity:1}}
+
+/* Gradient animated headline */
+h1 .accent-text{background:linear-gradient(120deg,var(--accent) 0%,var(--teal) 45%,var(--accent-strong) 80%,var(--accent) 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:hueShift 6s ease-in-out infinite}
+@keyframes hueShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+/* Floating hero panel */
+.hero-panel{animation:floaty 7s ease-in-out infinite;transform-style:preserve-3d;perspective:1400px}
+.hero-panel .panel-main{transition:transform .5s cubic-bezier(.22,.61,.36,1);transform-style:preserve-3d;will-change:transform}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* Status pill pulse */
+.status-pill::before{animation:statusPulse 1.6s ease-in-out infinite}
+@keyframes statusPulse{0%,100%{box-shadow:0 0 0 5px rgba(13,138,147,.16)}50%{box-shadow:0 0 0 10px rgba(13,138,147,.06)}}
+
+/* Metrics — inner glow on hover */
+.metric{transition:transform .3s ease,box-shadow .3s ease;position:relative;overflow:hidden}
+.metric::after{content:"";position:absolute;inset:0;background:radial-gradient(200px circle at var(--mx,50%) var(--my,50%),rgba(15,79,168,.12),transparent 60%);opacity:0;transition:opacity .3s ease;pointer-events:none}
+.metric:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(15,79,168,.14)}
+.metric:hover::after{opacity:1}
+
+/* Sparkline — crisper glow */
+.sparkline span{box-shadow:0 0 18px rgba(25,211,183,.35);transition:height .6s cubic-bezier(.22,.61,.36,1)}
+.chart-strip{position:relative}
+.chart-strip::before{content:"";position:absolute;inset:0;border-radius:20px;background:radial-gradient(circle at 20% 20%,rgba(88,182,255,.18),transparent 50%);pointer-events:none}
+
+/* Mini cards — sheen on hover */
+.mini-card{position:relative;overflow:hidden;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+.mini-card::before{content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent);transform:skewX(-18deg);transition:left .9s ease}
+.mini-card:hover{transform:translateY(-4px);box-shadow:0 22px 48px rgba(15,79,168,.18);border-color:rgba(15,79,168,.22)}
+.mini-card:hover::before{left:140%}
+
+/* Band items — counter style */
+.band-item{transition:transform .3s ease,box-shadow .3s ease;position:relative;overflow:hidden}
+.band-item::after{content:"";position:absolute;bottom:-60px;right:-60px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(15,79,168,.08),transparent 70%);transition:transform .5s ease}
+.band-item:hover{transform:translateY(-5px);box-shadow:0 28px 60px rgba(15,79,168,.15)}
+.band-item:hover::after{transform:scale(1.4)}
+
+/* Feature cards — 3D tilt + glow */
+.feature-card{position:relative;overflow:hidden;transform-style:preserve-3d;will-change:transform}
+.feature-card::before{content:"";position:absolute;inset:0;background:radial-gradient(380px circle at var(--mx,50%) var(--my,50%),rgba(15,79,168,.1),transparent 55%);opacity:0;transition:opacity .35s ease;pointer-events:none}
+.feature-card:hover::before{opacity:1}
+.feature-icon{transition:transform .4s cubic-bezier(.22,.61,.36,1),box-shadow .4s ease}
+.feature-card:hover .feature-icon{transform:scale(1.1) rotate(-6deg);box-shadow:0 12px 30px rgba(15,79,168,.22)}
+.feature-list li{transition:color .25s ease,padding-left .25s ease}
+.feature-list li:hover{color:var(--text);padding-left:20px}
+.feature-list li::before{transition:transform .25s ease,background .25s ease}
+.feature-list li:hover::before{transform:scale(1.6);background:var(--accent)}
+
+/* Workflow & detail steps */
+.step-num{transition:transform .3s ease,background .3s ease,color .3s ease,box-shadow .3s ease}
+.workflow-steps li:hover .step-num,.detail-list li:hover .step-num{transform:scale(1.12) rotate(-4deg);background:var(--accent);color:#fff;box-shadow:0 10px 22px rgba(15,79,168,.28)}
+
+/* Code block — terminal feel */
+.code-block{position:relative;overflow:hidden}
+.code-block::before{content:"● ● ●";position:absolute;top:10px;left:18px;color:rgba(255,255,255,.22);font-size:.62rem;letter-spacing:6px}
+.code-block pre{padding-top:22px}
+.copy-btn{transition:transform .2s ease,background .2s ease}
+.copy-btn:hover{transform:translateY(-1px);background:rgba(88,182,255,.28)}
+
+/* Eval table row hover */
+.eval-limits-table tbody tr{transition:background .2s ease}
+.eval-limits-table tbody tr:hover{background:rgba(15,79,168,.04)}
+.trial-step{transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+.trial-step:hover{transform:translateX(4px);box-shadow:0 16px 36px rgba(15,79,168,.12);border-color:rgba(15,79,168,.22)}
+
+/* Pricing cards — animated lift + popular aura */
+.pricing-card{transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;position:relative;overflow:hidden}
+.pricing-card::before{content:"";position:absolute;inset:0;background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),rgba(15,79,168,.08),transparent 55%);opacity:0;transition:opacity .35s ease;pointer-events:none}
+.pricing-card:hover{transform:translateY(-8px);box-shadow:0 32px 70px rgba(15,79,168,.18)}
+.pricing-card:hover::before{opacity:1}
+.pricing-card.popular::after{content:"";position:absolute;inset:-2px;border-radius:28px;padding:2px;background:linear-gradient(120deg,var(--accent),var(--teal),var(--accent-strong),var(--teal),var(--accent));background-size:300% 100%;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:gradShift 5s linear infinite;pointer-events:none;z-index:0}
+.popular-badge{animation:badgeBob 3s ease-in-out infinite}
+@keyframes badgeBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-3px)}}
+.pricing-price strong{transition:transform .3s ease}
+.pricing-card:hover .pricing-price strong{transform:scale(1.04)}
+.pricing-features li{transition:transform .2s ease,color .2s ease}
+.pricing-features li:hover{transform:translateX(4px);color:var(--text)}
+
+/* Platform cards */
+.platform-card{transition:transform .35s ease,box-shadow .35s ease;position:relative;overflow:hidden}
+.platform-card::before{content:"";position:absolute;inset:0;background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(13,138,147,.1),transparent 55%);opacity:0;transition:opacity .35s ease;pointer-events:none}
+.platform-card:hover{transform:translateY(-6px);box-shadow:0 28px 60px rgba(15,79,168,.16)}
+.platform-card:hover::before{opacity:1}
+.platform-os svg{transition:transform .4s ease}
+.platform-card:hover .platform-os svg{transform:rotate(-8deg) scale(1.12)}
+.download-btn{position:relative;overflow:hidden}
+.download-btn::before{content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.8),transparent);transform:skewX(-18deg);transition:left .7s ease}
+.download-btn:hover::before{left:140%}
+
+/* Contact items */
+.contact-item{transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+.contact-item:hover{transform:translateY(-3px) translateX(4px);box-shadow:0 20px 44px rgba(15,79,168,.14);border-color:rgba(15,79,168,.2)}
+.contact-icon{transition:transform .4s cubic-bezier(.22,.61,.36,1)}
+.contact-item:hover .contact-icon{transform:scale(1.08) rotate(-5deg)}
+
+/* CTA shell — stronger immersion */
+.cta-shell{isolation:isolate}
+.cta-shell::after{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg at 30% 120%,transparent 0deg,rgba(88,182,255,.18) 80deg,transparent 160deg);animation:sweep 14s linear infinite;pointer-events:none;z-index:0}
+.cta-shell>*{position:relative;z-index:1}
+@keyframes sweep{to{transform:rotate(360deg)}}
+.cta-shell::before{animation:pulseGlow 5s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:.7}}
+
+/* Buttons — magnetic glow */
+.btn-primary,.nav-action,.cta-buy,.cta-enterprise{position:relative;overflow:hidden;isolation:isolate}
+.btn-primary::before,.nav-action::before,.cta-buy::before,.cta-enterprise::before{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);transition:left .7s ease;z-index:0}
+.btn-primary:hover::before,.nav-action:hover::before,.cta-buy:hover::before,.cta-enterprise:hover::before{left:160%}
+.btn-primary>*,.nav-action>*,.cta-buy>*,.cta-enterprise>*{position:relative;z-index:1}
+.btn-primary:hover,.nav-action:hover{box-shadow:0 18px 42px rgba(15,79,168,.36)}
+.btn-secondary:hover{background:rgba(255,255,255,.95);border-color:rgba(15,79,168,.2)}
+
+/* Nav brand-mark — animated gradient pulse */
+.brand-mark{transition:transform .3s ease,box-shadow .3s ease}
+.brand:hover .brand-mark{transform:rotate(-6deg) scale(1.06);box-shadow:0 16px 34px rgba(15,79,168,.22)}
+.brand-mark::before{animation:markPulse 2.4s ease-in-out infinite}
+@keyframes markPulse{0%,100%{opacity:1;filter:brightness(1)}50%{opacity:.75;filter:brightness(1.25)}}
+
+/* Nav links — animated underline */
+.nav-links a{position:relative}
+.nav-links a::after{content:"";position:absolute;bottom:-6px;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--teal));transition:width .25s ease}
+.nav-links a:hover::after{width:100%}
+
+/* Section kicker — glow dot */
+.section-kicker{display:inline-flex;align-items:center;gap:10px}
+.section-kicker::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(15,79,168,.14);animation:statusPulse 2s ease-in-out infinite}
+
+/* Footer */
+.footer-links a{position:relative;transition:color .2s ease}
+.footer-links a::after{content:"";position:absolute;bottom:-3px;left:0;width:0;height:1.5px;background:var(--accent);transition:width .25s ease}
+.footer-links a:hover::after{width:100%}
+
+/* Accessibility — reduce motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .aurora,.cursor-glow{display:none}
+}
 
 /* ══ Responsive ══════════════════════════════════════════════════════════════
    1200px  tablet landscape (minor)
@@ -378,6 +542,13 @@ footer{padding:0 0 40px}
 </style>
 </head>
 <body>
+
+<!-- Immersive layers -->
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="aurora" aria-hidden="true">
+  <span class="o1"></span><span class="o2"></span><span class="o3"></span><span class="o4"></span>
+</div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
 <!-- ══════════════════════════════════════════════════════ NAV -->
 <nav>
@@ -1008,6 +1179,7 @@ chmod +x ./tsnperf
 </footer>
 
 <script>
+/* ── Copy-code buttons ─────────────────────────────────────────────── */
 function copyCode(button) {
   const text = button.parentElement.querySelector("pre").innerText;
   navigator.clipboard.writeText(text).then(() => {
@@ -1017,10 +1189,163 @@ function copyCode(button) {
   });
 }
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
-}, { threshold: .1 });
-document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+/* ── Scroll reveal (staggered) ─────────────────────────────────────── */
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add("visible"), i * 60);
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: .12 });
+document.querySelectorAll(".reveal").forEach(el => revealObs.observe(el));
+
+/* ── Scroll progress bar ───────────────────────────────────────────── */
+const progressBar = document.getElementById("scrollProgress");
+function updateProgress() {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  progressBar.style.width = pct + "%";
+}
+window.addEventListener("scroll", updateProgress, { passive: true });
+updateProgress();
+
+/* ── Cursor-reactive glow + mouse-tracked card sheen ───────────────── */
+const glow = document.getElementById("cursorGlow");
+const reactive = document.querySelectorAll(".feature-card,.pricing-card,.platform-card,.metric");
+const isTouch = matchMedia("(hover:none)").matches;
+if (!isTouch) {
+  let raf = null, mx = 0, my = 0;
+  window.addEventListener("mousemove", (e) => {
+    mx = e.clientX; my = e.clientY;
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      glow.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+      glow.classList.add("active");
+      raf = null;
+    });
+  });
+  window.addEventListener("mouseleave", () => glow.classList.remove("active"));
+
+  reactive.forEach(card => {
+    card.addEventListener("mousemove", (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100) + "%");
+      card.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100) + "%");
+    });
+  });
+}
+
+/* ── 3D tilt on hero panel ─────────────────────────────────────────── */
+const panelMain = document.querySelector(".hero-panel .panel-main");
+if (panelMain && !isTouch) {
+  const panel = panelMain.parentElement;
+  panel.addEventListener("mousemove", (e) => {
+    const r = panel.getBoundingClientRect();
+    const rx = ((e.clientY - r.top) / r.height - .5) * -6;
+    const ry = ((e.clientX - r.left) / r.width - .5) * 8;
+    panelMain.style.transform = `perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+  });
+  panel.addEventListener("mouseleave", () => {
+    panelMain.style.transform = "perspective(1200px) rotateX(0) rotateY(0)";
+  });
+}
+
+/* ── 3D tilt on feature & pricing & platform cards ─────────────────── */
+if (!isTouch) {
+  document.querySelectorAll(".feature-card,.pricing-card,.platform-card").forEach(card => {
+    card.style.transformStyle = "preserve-3d";
+    card.addEventListener("mousemove", (e) => {
+      const r = card.getBoundingClientRect();
+      const rx = ((e.clientY - r.top) / r.height - .5) * -4;
+      const ry = ((e.clientX - r.left) / r.width - .5) * 5;
+      card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
+    });
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "";
+    });
+  });
+}
+
+/* ── Magnetic primary buttons ──────────────────────────────────────── */
+if (!isTouch) {
+  document.querySelectorAll(".btn-primary,.nav-action,.cta-buy,.cta-enterprise").forEach(btn => {
+    btn.addEventListener("mousemove", (e) => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width / 2) * .25;
+      const y = (e.clientY - r.top - r.height / 2) * .35;
+      btn.style.transform = `translate(${x}px, ${y - 2}px)`;
+    });
+    btn.addEventListener("mouseleave", () => btn.style.transform = "");
+  });
+}
+
+/* ── Parallax hero orbs (subtle) ───────────────────────────────────── */
+const orbs = document.querySelectorAll(".aurora span");
+window.addEventListener("scroll", () => {
+  const y = window.scrollY;
+  orbs.forEach((o, i) => {
+    const speed = (i + 1) * 0.06;
+    o.style.translate = `0 ${y * speed}px`;
+  });
+}, { passive: true });
+
+/* ── Count-up for band-item & mini-card numbers ────────────────────── */
+function animateNumber(el) {
+  const txt = el.textContent.trim();
+  const m = txt.match(/^([\d,]+(?:\.\d+)?)(.*)$/);
+  if (!m) return;
+  const target = parseFloat(m[1].replace(/,/g, ""));
+  if (isNaN(target) || target === 0) return;
+  const suffix = m[2];
+  const duration = 1400;
+  const start = performance.now();
+  const hasComma = m[1].includes(",");
+  const decimals = (m[1].split(".")[1] || "").length;
+  function tick(now) {
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const val = target * eased;
+    let out = decimals ? val.toFixed(decimals) : Math.round(val).toString();
+    if (hasComma) out = parseFloat(out).toLocaleString("en-US", { maximumFractionDigits: decimals });
+    el.textContent = out + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const numObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { animateNumber(e.target); numObs.unobserve(e.target); }
+  });
+}, { threshold: .4 });
+document.querySelectorAll(".metric strong, .band-item strong, .mini-card strong").forEach(el => {
+  if (/[\d,]/.test(el.textContent)) numObs.observe(el);
+});
+
+/* ── Live sparkline — gently re-shuffle heights so the chart feels alive ── */
+(() => {
+  const bars = document.querySelectorAll(".sparkline span");
+  if (!bars.length) return;
+  function tick() {
+    bars.forEach(b => {
+      const h = 30 + Math.random() * 60;
+      b.style.height = h + "%";
+    });
+  }
+  setInterval(tick, 1400);
+})();
+
+/* ── Smooth anchor scroll ──────────────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener("click", (e) => {
+    const id = a.getAttribute("href");
+    if (id.length < 2) return;
+    const t = document.querySelector(id);
+    if (!t) return;
+    e.preventDefault();
+    t.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
 </script>
 </body>
 </html>
